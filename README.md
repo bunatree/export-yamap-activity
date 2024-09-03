@@ -13,7 +13,7 @@
 
 この拡張機能の最新バージョンは以下のリンクからダウンロードできます。
 
-[YAMAP Activity Exporter v1.0.0](https://github.com/bunatree/export-yamap-activity/releases/download/v1.0.0/my_extension.zip)
+[YAMAP Activity Exporter v1.0.0](https://github.com/bunatree/export-yamap-activity/releases/download/v1.0.0/export-yamap-activity-1.0.0.zip)
 
 ダウンロードした zip ファイルを展開し、任意のフォルダにコピーしてください。
 
