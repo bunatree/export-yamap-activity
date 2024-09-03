@@ -1,0 +1,25 @@
+#btn-export {
+  padding: 0.25rem 0.5rem;
+  color: #fff;
+  background-color: #007be8;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+}
+
+#btn-export:hover {
+  background-color: #0065be;
+}
+
+#btn-export.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  pointer-events: none; /* クリックを無効化 */
+  color: #888;
+}
+
+#btn-export.disabled:hover {
+  background-color: #ccc;
+}
