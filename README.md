@@ -37,3 +37,7 @@ GPX ファイルはエクスポートされません。活動日記ページ上�
 ## 依存ライブラリ
 この拡張機能は、[JSZip ライブラリ](https://stuk.github.io/jszip/ "JSZip") を使用しています。JSZipはMITライセンスで配布されています。
 
+## 動作確認
+Browser: Google Chrome 128.0.6613.120 (Official Build) (arm64)
+OS: macOS バージョン14.6.1（ビルド23G93）
+
