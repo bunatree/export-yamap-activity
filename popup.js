@@ -88,11 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
     zip.file('photos.txt', photosTxt);
 
     const detailsTxt = [
+      `Title: ${activityData.title || ''}`,
       `Date: ${activityData.date || ''}`,
       `Days: ${activityData.days || ''}`,
+      `User Name: ${activityData.userName || ''}`,
       `Prefecture: ${activityData.prefName || ''}`,
       `Map Name: ${activityData.mapName || ''}`,
-      `Title: ${activityData.title || ''}`,
       `Distance: ${activityData.distance || ''}`,
       `Ascent: ${activityData.ascent || ''}`,
       `Descent: ${activityData.descent || ''}`,

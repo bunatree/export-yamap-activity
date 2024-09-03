@@ -3,6 +3,8 @@ async function gatherActivityData() {
   const date = document.querySelector('.ActivityDetailTabLayout__Middle__Date')?.textContent.trim();
   const days = document.querySelector('.ActivityDetailTabLayout__Middle__Days')?.textContent.trim();
 
+  const userName = document.querySelector('.ActivityDetailTabLayout__UserName')?.textContent.trim();
+
   const prefName = Array.from(document.querySelectorAll('.ActivityDetailTabLayout__Middle__Prefecture'))
     .map(pref => pref.innerText.trim())
     .join(' ');
@@ -24,11 +26,10 @@ async function gatherActivityData() {
     memo: img.alt
   }));
 
-  // console.log({ date, days, prefName, mapName, title, distance, ascent, descent, description, gpxButton, photos });
+  // console.log({ date, days, userName, prefName, mapName, title, distance, ascent, descent, description, gpxButton, photos });
 
-  // データをまとめて返す
   return {
-    date, days, prefName, mapName, title, distance, ascent, descent, description, gpxButton, photos
+    date, days, userName, prefName, mapName, title, distance, ascent, descent, description, gpxButton, photos
   };
 }
 
