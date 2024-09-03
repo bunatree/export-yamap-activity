@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function fetchPhoto(url) {
-    await delay(250); // 0.25秒のウェイト
+    await delay(100); // 0.1秒のウェイト（不要かも）
     return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage({ action: 'fetchPhoto', url: url }, (response) => {
         if (response.error) {
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3桁または必要に応じて4桁のファイル名を生成
         const photoNumber = String(i + 1).padStart(activityData.photos.length.toString().length, '0');
         zip.file(`image${photoNumber}.jpg`, blob);
-        await delay(250); // 0.25秒のウェイト
+        await delay(100); // 0.1秒のウェイト（不要かも）
       } catch (error) {
         console.error('Failed to fetch photo:', error);
       }
@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `User Name: ${activityData.userName || ''}`,
       `Prefecture: ${activityData.prefName || ''}`,
       `Map Name: ${activityData.mapName || ''}`,
+      `Tags: ${activityData.tags || ''}`,
       `Distance: ${activityData.distance || ''}`,
       `Ascent: ${activityData.ascent || ''}`,
       `Descent: ${activityData.descent || ''}`,

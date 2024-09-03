@@ -9,6 +9,10 @@ async function gatherActivityData() {
     .map(pref => pref.innerText.trim())
     .join(' ');
 
+  const tags = Array.from(document.querySelectorAll('.ActivitiesId__Misc__Tag'))
+  .map(tag => tag.innerText.trim())
+  .join(' ');
+
   const mapName = document.querySelector('.ActivityDetailTabLayout__MapName')?.textContent.trim();
   const title = document.querySelector('.ActivityDetailTabLayout__Title')?.textContent.trim();
   const distance = document.querySelector('#activity-record-value-distance')?.textContent.trim();
@@ -17,7 +21,7 @@ async function gatherActivityData() {
 
   const description = document.querySelector('.ActivitiesId__Description__Body')?.textContent.trim();
 
-  const gpxButton = document.querySelector('.ActivitiesId__Misc__DownloadButton');
+  // const gpxButton = document.querySelector('.ActivitiesId__Misc__DownloadButton');
 
   // 写真情報の取得
   const photos = Array.from(document.querySelectorAll('.ActivitiesId__Photo__Image')).map(img => ({
@@ -26,10 +30,10 @@ async function gatherActivityData() {
     memo: img.alt
   }));
 
-  // console.log({ date, days, userName, prefName, mapName, title, distance, ascent, descent, description, gpxButton, photos });
+  // console.log({ date, days, userName, prefName, mapName, title, distance, ascent, descent, description, tags, photos });
 
   return {
-    date, days, userName, prefName, mapName, title, distance, ascent, descent, description, gpxButton, photos
+    date, days, userName, prefName, mapName, title, distance, ascent, descent, description, tags, photos
   };
 }
 
