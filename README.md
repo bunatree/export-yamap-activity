@@ -34,10 +34,15 @@ Google Chrome や Microsoft Edge に拡張機能としてインストールし�
 
 GPX ファイルはエクスポートされません。活動日記ページ上のボタンをクリックして手動で別途エクスポートしてください。
 
-## 依存ライブラリ
-この拡張機能は、[JSZip ライブラリ](https://stuk.github.io/jszip/ "JSZip") を使用しています。JSZipはMITライセンスで配布されています。
+## ライセンス
+この拡張機能は、次のライブラリや画像を使用しています。
+
+[JSZip ライブラリ](https://stuk.github.io/jszip/ "JSZip") … JSZip は MIT ライセンスで配布されています。
+
+[Triangle icons created by Iconpro86 - Flaticon](https://www.flaticon.com/free-icons/triangle "triangle icons") … Free for personal and commercial purpose with attribution.
 
 ## 動作確認
 Browser: Google Chrome 128.0.6613.120 (Official Build) (arm64)
+
 OS: macOS バージョン14.6.1（ビルド23G93）
 
