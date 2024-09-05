@@ -95,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const detailsTxt = [
       `Title: ${activityData.title || ''}`,
+      `URL: ${activityData.url || ''}`
       `Date: ${activityData.date || ''}`,
       `Days: ${activityData.days || ''}`,
       `User Name: ${activityData.userName || ''}`,
@@ -104,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `Distance: ${activityData.distance || ''}`,
       `Ascent: ${activityData.ascent || ''}`,
       `Descent: ${activityData.descent || ''}`,
-      `Description: ${activityData.description || ''}`
+      `Description: ${activityData.description || ''}`,
     ].join('\n');
     zip.file('details.txt', detailsTxt);
 
@@ -113,12 +114,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = URL.createObjectURL(content);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'activity_data.zip';
+    // 日付からドット記号と(曜日)を削除
+    const activityDate = activityData.date.replace(/\./g, '').replace(/\(.+\)/, '');
+    const activityId = new URL(activityData.url).pathname.split('/').pop();
+    // ファイル名は YYYYMMDD-ActivityId.zip 
+    a.download = `${activityDate}-${activityId}.zip`;
     a.click();
     URL.revokeObjectURL(url);
   }
 
-  // ボタンの状態を元に戻す関数
+  // ボタンの状態を元に戻す
   function resetButton() {
     const exportButtonElm = document.getElementById('btn-export');
     exportButtonElm.classList.remove('disabled');
