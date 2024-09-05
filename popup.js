@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const detailsTxt = [
       `Title: ${activityData.title || ''}`,
-      `URL: ${activityData.url || ''}`
+      `URL: ${activityData.url || ''}`,
       `Date: ${activityData.date || ''}`,
       `Days: ${activityData.days || ''}`,
       `User Name: ${activityData.userName || ''}`,
@@ -115,10 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const a = document.createElement('a');
     a.href = url;
     // 日付からドット記号と(曜日)を削除
-    const activityDate = activityData.date.replace(/\./g, '').replace(/\(.+\)/, '');
+    const activityDate = activityData.date.replace(/\./g, '-').replace(/\(.+\)/, '');
     const activityId = new URL(activityData.url).pathname.split('/').pop();
-    // ファイル名は YYYYMMDD-ActivityId.zip 
-    a.download = `${activityDate}-${activityId}.zip`;
+    // ファイル名は yamap_YYYY-MM-DD_ActivityId.zip 
+    a.download = `yamap_${activityDate}_${activityId}.zip`;
     a.click();
     URL.revokeObjectURL(url);
   }
