@@ -1,27 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const exportButton = document.getElementById('btn-export');
+  
+  const exportButtonElm = document.getElementById('btn-export');
+
+  // ブラウザーの言語設定を取得
+  const userLang = navigator.language || navigator.userLanguage; // 'ja', 'en-US', etc.
+  const lang = userLang.startsWith('ja') ? 'ja' : 'en';
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const url = new URL(tabs[0].url);
 
     // URLが指定のパターンに一致しない場合、ボタンを無効化
     if (!url.hostname.includes('yamap.com') || !url.pathname.startsWith('/activities/')) {
-      exportButton.classList.add('disabled');
-      exportButton.textContent = 'Not Available';
-      exportButton.disabled = true; // ボタンを無効化してクリックできなくする
+      exportButtonElm.classList.add('disabled');
+      exportButtonElm.textContent = i18n[lang].btn_label_unavailable;
+      exportButtonElm.disabled = true;
     } else {
-      exportButton.classList.remove('disabled');
-      exportButton.textContent = 'Export Activity Data';
-      exportButton.disabled = false; // ボタンを有効化
+      exportButtonElm.classList.remove('disabled');
+      exportButtonElm.textContent = i18n[lang].btn_label_available;
+      exportButtonElm.disabled = false;
     }
   });
 
   document.getElementById('btn-export').addEventListener('click', () => {
-    const exportButton = document.getElementById('btn-export');
+
+    const exportButtonElm = document.getElementById('btn-export');
 
     // ボタンの状態を変更
-    exportButton.classList.add('disabled');
-    exportButton.textContent = 'Exporting... Please wait.';
+    exportButtonElm.classList.add('disabled');
+    exportButtonElm.textContent = i18n[lang].btn_label_exporting;
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, { action: 'gatherData' }, (response) => {
@@ -114,9 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ボタンの状態を元に戻す関数
   function resetButton() {
-    const exportButton = document.getElementById('btn-export');
-    exportButton.classList.remove('disabled');
-    exportButton.textContent = 'Export Activity Data';
-    exportButton.disabled = false; // ボタンを有効化
+    const exportButtonElm = document.getElementById('btn-export');
+    exportButtonElm.classList.remove('disabled');
+    exportButtonElm.textContent = i18n[lang].btn_label_available;
+    exportButtonElm.disabled = false; // ボタンを有効化
   }
+
 });
