@@ -37,7 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (response) {
           // ZIP作成・ダウンロード処理を呼び出す
           downloadAsZip(response).then(() => {
-            resetButton();  // ZIPダウンロード後にボタンを元に戻す
+            resetButton(); // ZIPダウンロード後にボタンを元に戻す
+            downloadGpx(); // GPXファイルのダウンロードを試みる
           }).catch(error => {
             console.error('Failed to download ZIP:', error);
             resetButton();  // エラーがあった場合もボタンを元に戻す
@@ -131,4 +132,19 @@ document.addEventListener('DOMContentLoaded', () => {
     exportButtonElm.disabled = false; // ボタンを有効化
   }
 
+  // GPXファイルのダウンロードを試みる
+  function downloadGpx() {
+    if (window.confirm(i18n[lang].msg_confirm_download_gpx)) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'downloadGpx' }, (response) => {
+          if (chrome.runtime.lastError) {
+            console.error('Failed to send message to download GPX:', chrome.runtime.lastError.message);
+          } else {
+            console.log('GPX download triggered successfully.');
+          }
+        });
+      });
+    }
+  }
+  
 });

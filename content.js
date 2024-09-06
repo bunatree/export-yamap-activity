@@ -41,10 +41,23 @@ async function gatherActivityData() {
 
 // メッセージをリッスンして gatherActivityData を呼び出す
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+
   if (request.action === 'gatherData') {
     gatherActivityData().then(data => {
       sendResponse(data);
     });
     return true; // 非同期応答を維持するために true を返す
   }
+
+  if (request.action === 'downloadGpx') {
+    const gpxButton = document.querySelector('.ActivitiesId__Misc__DownloadButton');
+    if (gpxButton) {
+      gpxButton.click();
+      sendResponse({ success: true });
+    } else {
+      console.error('GPX download button not found.');
+      sendResponse({ error: 'GPX download button not found.' });
+    }
+  }
+
 });
