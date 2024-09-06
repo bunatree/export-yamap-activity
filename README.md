@@ -1,4 +1,4 @@
-# YAMAP Activity Exporter
+# YAMAP Activity Export Tool
 ## YAMAP の活動日記をエクスポートする Chrome 拡張機能
 
 この Chrome 拡張機能は、YAMAP の活動日記（山行記録）をエクスポートします。
@@ -15,7 +15,7 @@
 
 下記 URL をクリックして当レポジトリの「main」ブランチを開きます。
 
-[https://github.com/bunatree/export-yamap-activity/tree/main](https://github.com/bunatree/export-yamap-activity/tree/main)
+[https://github.com/bunatree/yamap-activity-export-tool/tree/main](https://github.com/bunatree/yamap-activity-export-tool/tree/main)
 
 [Code] ボタンをクリックして表示されたメニューの一番下にある [Download ZIP] をクリックします。
 
@@ -35,7 +35,7 @@ Chrome または Edge ブラウザを起動します。
 
 「パッケージ化されていない拡張機能を読み込む」をクリックして、当拡張機能をコピーしたフォルダを選択します。
 
-拡張機能のリストに「YAMAP Activity Exporter」が表示されることを確認します。
+拡張機能のリストに「YAMAP Activity Export Tool」が表示されることを確認します。
 
 ブラウザを再起動します。
 
@@ -53,18 +53,19 @@ Chrome または Edge ブラウザを起動します。
 
 - テキストデータ
   - 活動日記のタイトル
-  - URL
+  - 活動日記の URL
   - 日付
   - 行動日数
   - 都道府県
   - 地図の名前
-  - 行動時間
+  - 移動距離
   - 累積標高（上り、下り）
+  - タグ
   - 詳細（感想文）
+  - 写真のメモ (テキスト)
 - 写真
   - 画像ファイル (JPEG)
-  - 写真のメモ (テキスト)
-
+  
 GPX ファイルはエクスポートされません。活動日記ページ上のボタンをクリックして手動で別途エクスポートしてください。
 
 ## ライセンス

@@ -1,5 +1,5 @@
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("YAMAP Activity Exporter installed.");
+  console.log("YAMAP Activity Export Tool installed.");
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
