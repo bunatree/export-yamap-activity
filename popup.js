@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const url = new URL(tabs[0].url);
 
-    // URLが指定のパターンに一致しない場合、ボタンを無効化
-    if (!url.hostname.includes('yamap.com') || !url.pathname.startsWith('/activities/')) {
+    // URLが指定のパターンに一致しない場合、または「日記」のURLの場合、ボタンを無効化
+    if (!url.hostname.includes('yamap.com') || !url.pathname.startsWith('/activities/') || url.pathname.includes('/article')) {
       exportButtonElm.classList.add('disabled');
       exportButtonElm.textContent = i18n[lang].btn_label_unavailable;
       exportButtonElm.disabled = true;
