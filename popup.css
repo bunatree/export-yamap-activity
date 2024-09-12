@@ -1,3 +1,11 @@
+#page-title {
+  font-size: 0.8rem;
+  &> span {
+    display: block;
+    white-space: nowrap;
+  }
+}
+
 #btn-export {
   padding: 0.25rem 0.5rem;
   color: #fff;

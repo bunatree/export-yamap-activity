@@ -1,10 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
   
-  const exportButtonElm = document.getElementById('btn-export');
-
   // ブラウザーの言語設定を取得
   const userLang = navigator.language || navigator.userLanguage; // 'ja', 'en-US', etc.
   const lang = userLang.startsWith('ja') ? 'ja' : 'en';
+
+  // ページタイトル設定
+  const toolNameElm = document.querySelector('#page-title .tool-name');
+  toolNameElm.textContent = i18n[lang].page_title_popup;
+
+  const exportButtonElm = document.getElementById('btn-export');
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const url = new URL(tabs[0].url);
