@@ -24,11 +24,19 @@ async function gatherActivityData() {
   const url = window.location.href;
 
   // 写真情報の取得
-  const photos = Array.from(document.querySelectorAll('.ActivitiesId__Photo__Image')).map(img => ({
-    // data-src属性があれば使い、なければsrc属性を使う
-    url: (img.getAttribute('data-src') || img.src).replace(/\?.*/, ''),
-    memo: img.alt
-  }));
+  const photos = Array.from(document.querySelectorAll('.ActivitiesId__Photo')).map(figure => {
+
+    const img = figure.querySelector('img');
+    const caption = figure.querySelector('figcaption')?.textContent.trim();
+    
+    return {
+      // data-src属性があれば使い、なければsrc属性を使う
+      url: (img.getAttribute('data-src') || img.src).replace(/\?.*/, ''),
+      // figurecaptionがあればその内容を取得し、なければimg.altを使う
+      memo: caption || img.alt
+    };
+
+  });
 
   // console.log({ date, days, userName, prefName, mapName, title, url, distance, ascent, descent, calorie, description, tags, photos });
 
