@@ -18,12 +18,10 @@ async function gatherActivityData() {
   const distance = document.querySelector('#activity-record-value-distance')?.textContent.trim();
   const ascent = document.querySelector('#activity-record-value-cumulative-up')?.textContent.trim();
   const descent = document.querySelector('#activity-record-value-cumulative-down')?.textContent.trim();
-
+  const calorie = document.querySelector('.ActivityRecord__Calorie .ActivityRecord__Score')?.textContent.trim();
   const description = document.querySelector('.ActivitiesId__Description__Body')?.textContent.trim();
 
   const url = window.location.href;
-
-  // const gpxButton = document.querySelector('.ActivitiesId__Misc__DownloadButton');
 
   // 写真情報の取得
   const photos = Array.from(document.querySelectorAll('.ActivitiesId__Photo__Image')).map(img => ({
@@ -32,10 +30,10 @@ async function gatherActivityData() {
     memo: img.alt
   }));
 
-  // console.log({ date, days, userName, prefName, mapName, title, url, distance, ascent, descent, description, tags, photos });
+  // console.log({ date, days, userName, prefName, mapName, title, url, distance, ascent, descent, calorie, description, tags, photos });
 
   return {
-    date, days, userName, prefName, mapName, title, url, distance, ascent, descent, description, tags, photos
+    date, days, userName, prefName, mapName, title, url, distance, ascent, descent, calorie, description, tags, photos
   };
 }
 

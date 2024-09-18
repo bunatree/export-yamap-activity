@@ -110,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `Distance: ${activityData.distance || ''}`,
       `Ascent: ${activityData.ascent || ''}`,
       `Descent: ${activityData.descent || ''}`,
+      `Calories: ${activityData.calorie || ''}`,
       `Description: ${activityData.description || ''}`,
     ].join('\n');
     zip.file('details.txt', detailsTxt);
