@@ -1,5 +1,6 @@
 #page-title {
   font-size: 0.8rem;
+  margin: 0.25rem 0;
   &> span {
     display: block;
     white-space: nowrap;
@@ -30,4 +31,9 @@
 
 #btn-export.disabled:hover {
   background-color: #ccc;
+}
+
+#msg {
+  margin: 0.25rem 0;
+  white-space: nowrap;
 }

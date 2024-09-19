@@ -66,4 +66,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
   }
 
+  // メッセージをコンソールに出力
+  if (request.message) {
+    console.log(request.message);
+  }
+
 });

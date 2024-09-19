@@ -57,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function fetchPhoto(url) {
-    await delay(100); // 0.1秒のウェイト（不要かも）
     return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage({ action: 'fetchPhoto', url: url }, (response) => {
         if (response.error) {
@@ -69,27 +68,52 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   async function downloadAsZip(activityData) {
+
     const zip = new JSZip();
+
     // activityData を JSON ファイルとして追加
     zip.file('activity.json', JSON.stringify(activityData, null, 2));
 
-    // 写真の取得と追加
+
     for (let i = 0; i < activityData.photos.length; i++) {
       const photo = activityData.photos[i];
       try {
+
         const base64DataUrl = await fetchPhoto(photo.url);
         const response = await fetch(base64DataUrl);
         const blob = await response.blob();
 
-        // 3桁または必要に応じて4桁のファイル名を生成
         const photoNumber = String(i + 1).padStart(activityData.photos.length.toString().length, '0');
+
+        // アクティブなタブに処理中の画像ファイル情報を送信
+        // (アクティブなタブのコンソールに出力)
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, { message: `Saving ${photo.url} as image${photoNumber}.jpg...` });
+        });
+
+        // 処理中の画像ファイル情報を表示
+        showMsg(i18n[lang].msg_saving_image_before + photoNumber + '.jpg' + i18n[lang].msg_saving_image_after);
+
         zip.file(`image${photoNumber}.jpg`, blob);
+
+        // 0.5秒待ってから次の画像を処理する
+        await wait(500);
+
       } catch (error) {
+        msgElm.innerText = 'Failed to fetch photo: ' + error;
         console.error('Failed to fetch photo:', error);
       }
     }
 
+    // 画像処理完了メッセージ
+    // (一瞬なので、まず見えないけど ^^;)
+    showMsg(i18n[lang].msg_completed_saving_images);
+  
     // photos.txt と details.txt の生成
     const photosTxt = activityData.photos.map((photo, i) => {
       const photoNumber = String(i + 1).padStart(activityData.photos.length.toString().length, '0');
@@ -112,7 +136,15 @@ document.addEventListener('DOMContentLoaded', () => {
       `Calories: ${activityData.calorie || ''}`,
       `Description: ${activityData.description || ''}`,
     ].join('\n');
+
     zip.file('details.txt', detailsTxt);
+
+    // テキスト情報保存完了メッセージ
+    // (一瞬なので、まず見えないけど ^^;)
+    showMsg(i18n[lang].msg_saved_text_info_files);
+
+    // メッセージをクリア
+    showMsg('');
 
     // ZIP ファイルの生成とダウンロード
     const content = await zip.generateAsync({ type: 'blob' });
@@ -126,6 +158,13 @@ document.addEventListener('DOMContentLoaded', () => {
     a.download = `yamap_${activityDate}_${activityId}.zip`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  function showMsg(msg) {
+    const msgDivElm = document.getElementById('msg');
+    if (msgDivElm) {
+      msgDivElm.innerText = msg;
+    }
   }
 
   // ボタンの状態を元に戻す
