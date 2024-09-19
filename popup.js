@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // 処理中の画像ファイル情報を表示
-        showMsg(i18n[lang].msg_saving_image_before + photoNumber + '.jpg' + i18n[lang].msg_saving_image_after);
+        showMsg(i18n[lang].msg_saving_image_before + 'image' + photoNumber + '.jpg' + i18n[lang].msg_saving_image_after);
 
         zip.file(`image${photoNumber}.jpg`, blob);
 
