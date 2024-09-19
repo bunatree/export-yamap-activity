@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+  // 写真取得時の待ち時間（ミリ秒）
+  const dalayMs = 500;
   
   // ブラウザーの言語設定を取得
   const userLang = navigator.language || navigator.userLanguage; // 'ja', 'en-US', etc.
@@ -68,10 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function wait(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   async function downloadAsZip(activityData) {
 
     const zip = new JSZip();
@@ -79,7 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // activityData を JSON ファイルとして追加
     zip.file('activity.json', JSON.stringify(activityData, null, 2));
 
+    // JSONファイル処理完了メッセージ
+    // (一瞬なので、まず見えないけど)
+    showMsg(i18n[lang].msg_completed_saving_json_file);
 
+    // 写真をループ処理
     for (let i = 0; i < activityData.photos.length; i++) {
       const photo = activityData.photos[i];
       try {
@@ -101,8 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         zip.file(`image${photoNumber}.jpg`, blob);
 
-        // 0.5秒待ってから次の画像を処理する
-        await wait(500);
+        // 1秒待ってから次の画像を処理する
+        await delay(dalayMs);
 
       } catch (error) {
         msgElm.innerText = 'Failed to fetch photo: ' + error;
@@ -111,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 画像処理完了メッセージ
-    // (一瞬なので、まず見えないけど ^^;)
+    // (一瞬なので、まず見えないけど)
     showMsg(i18n[lang].msg_completed_saving_images);
   
     // photos.txt と details.txt の生成
@@ -140,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     zip.file('details.txt', detailsTxt);
 
     // テキスト情報保存完了メッセージ
-    // (一瞬なので、まず見えないけど ^^;)
+    // (一瞬なので、まず見えないけど)
     showMsg(i18n[lang].msg_saved_text_info_files);
 
     // メッセージをクリア
