@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "YAMAP Activity Export Tool",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Exports YAMAP activity data including title, description, and photos.",
   "permissions": [
     "activeTab",
@@ -18,7 +18,7 @@
   },
   "action": {
     "default_popup": "popup.html",
-      "default_icon": {
+    "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
@@ -29,5 +29,10 @@
       "matches": ["https://yamap.com/activities/*"],
       "js": ["content.js"]
     }
-  ]
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
 }
