@@ -96,7 +96,9 @@ Chrome または Edge ブラウザを起動します。
 
 [JSZip ライブラリ](https://stuk.github.io/jszip/ "JSZip") … JSZip は MIT ライセンスで配布されています。
 
-[Triangle icons created by Iconpro86 - Flaticon](https://www.flaticon.com/free-icons/triangle "triangle icons") … Free for personal and commercial purpose with attribution.
+[Bleach free icon by Freepik - Flaticon](https://www.flaticon.com/free-icon/bleach_481058) … Free for personal and commercial purpose with attribution.
+
+[Arrow free icon created by prinda895 - Flaticon](https://www.flaticon.com/free-icon/arrow_16111384) ... Free for personal and commercial purpose with attribution.
 
 ## 動作確認
 
