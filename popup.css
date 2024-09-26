@@ -1,10 +1,11 @@
-#page-title {
-  font-size: 0.8rem;
-  margin: 0.25rem 0;
-  &> span {
-    display: block;
-    white-space: nowrap;
-  }
+body {
+  padding: 10px;
+  width: 300px; /* 幅を少し広げる */
+}
+
+h1#page-title {
+  font-size: 1rem;
+  font-weight: bold;
 }
 
 #btn-export {

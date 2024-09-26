@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YAMAP Activity Export Tool</title>
-    <script src="js/jszip.min.js"></script>
-    <link rel="stylesheet" href="popup.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YAMAP Activity Export Tool</title>
+  <script src="js/jszip.min.js"></script>
+  <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 </head>
 <body>
-    <h1 id="page-title">
-        <span class="service-name">YAMAP</span>
-        <span class="tool-name">Activity Export Tool</span>
-    </h1>
-    <button id="btn-export">Export Activity Data</button>
-    <div id="msg"></div>
-    <script src="i18n.js"></script>
-    <script src="popup.js"></script>
+  <h1 id="page-title" class="text-center mb-2">
+    <div class="service-name">YAMAP</div>
+    <div class="tool-name">Activity Export Tool</div>
+  </h1>
+
+  <button id="btn-export">Export Activity Data</button>
+  <div id="msg"></div>
+
+  <div id="button-area" class="d-grid gap-2">
+    <button id="step1" class="btn btn-sm btn-secondary btn-export" title="Export Activity Data">
+      <i class="bi bi-download"></i>&nbsp;
+      <span class="btn-label flex-grow-1">Export Activity Data</span>
+    </button>
+  </div>
+
+  <div id="alert" class="d-none"></div>
+
+  <script src="i18n.js"></script>
+  <script src="popup.js"></script>
 </body>
 </html>
