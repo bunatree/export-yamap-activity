@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       exportButtonElm.classList.remove('btn-secondary');
       exportButtonElm.classList.add('btn-primary');
-      exportButtonElm.textContent = i18n[lang].btn_label_available;
+      exportButtonElm.innerHTML = '<i class="bi bi-download"></i>&nbsp;<span class="btn-label flex-grow-1">' + i18n[lang].btn_label_available + '</span>';
       exportButtonElm.disabled = false;
       showButtonArea();
       hideAlert();
