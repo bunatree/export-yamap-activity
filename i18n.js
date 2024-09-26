@@ -9,7 +9,8 @@ const i18n = {
     "msg_saving_image_before": "Saving ",
     "msg_saving_image_after": "...",
     "msg_completed_saving_images": "Completed saving photos.",
-    "msg_saved_text_info_files": "Saved text files."
+    "msg_saved_text_info_files": "Saved text files.",
+    "msg_export_completed": "Export Completed!"
   },
   "ja": {
     "page_title_popup": "活動日記エクスポート",
@@ -21,7 +22,8 @@ const i18n = {
     "msg_saving_image_before": "",
     "msg_saving_image_after": " を処理中...",
     "msg_completed_saving_images": "写真の処理完了",
-    "msg_saved_text_info_files": "テキスト保存完了"
+    "msg_saved_text_info_files": "テキスト保存完了",
+    "msg_export_completed": "エクスポートが完了しました"
   }
 };
 
