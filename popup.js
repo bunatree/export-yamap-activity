@@ -144,9 +144,12 @@ async function downloadAsZip(activityData) {
       const photoNumber = String(i + 1).padStart(activityData.photos.length.toString().length, '0');
 
       // 進捗（例: "（3/22枚）"）。残り枚数が分かるようにして、処理中の中断・再実行を防ぐ
-      const progress = i18n[lang].msg_saving_image_progress
-        .replace('{current}', i + 1)
-        .replace('{total}', activityData.photos.length);
+      // 写真が多い活動日記では文字列が長くなるため、括弧の内側で改行されないようにする
+      const progress = '<span style="white-space:nowrap">'
+        + i18n[lang].msg_saving_image_progress
+          .replace('{current}', i + 1)
+          .replace('{total}', activityData.photos.length)
+        + '</span>';
 
       // アクティブなタブに処理中の画像ファイル情報を送信
       // (アクティブなタブのコンソールに出力)
