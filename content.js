@@ -1,23 +1,57 @@
 // YAMAPはCSS-in-JS（ハッシュ化されたクラス名、例: css-xhr9y）を採用しており、
 // 意味のあるクラス名やIDが存在しないため、要素の構造・属性・テキスト内容を手がかりに取得する。
 
-// 「日記」タブ（/article）のHTMLを取得してパースする。
-// 「活動データ」タブの写真はサムネイルサイズ（rs:fill:336:336等）だが、
-// 「日記」タブは旧UIのままで、写真の原寸に近いサイズ（rs:fit:1440:1080等）と
-// 説明文の全文がサーバー側で生成されたHTMLにそのまま含まれているため、こちらから取得する。
-async function fetchArticleDocument() {
-  const articleUrl = window.location.href.replace(/\/article\/?$/, '').replace(/\/?$/, '') + '/article';
+// 表示中の活動日記が自分のものかどうかを判定する。
+// YAMAPは本人にだけ「編集」リンク（/activities/<id>/edit）を表示するため、これを本人確認に用いる。
+// 本ツールは私的使用（自分の記録のバックアップ）を目的としており、他人の活動日記は対象外とする。
+function isOwnActivity() {
+  const activityId = window.location.pathname.match(/\/activities\/(\d+)/)?.[1];
+  if (!activityId) return false;
+  return !!document.querySelector(`a[href^="/activities/${activityId}/edit"]`);
+}
+
+// 「日記」タブ（/article）のHTMLに埋め込まれたNext.jsのデータ（__NEXT_DATA__）を取得する。
+// 表示用のHTML（ハッシュ化クラス名）はYAMAPのUI変更のたびに壊れるが、
+// このJSONはアプリケーションの内部データなので構造が比較的安定している。
+// さらに、写真は縮小・再圧縮される前のURL（baseUrl）が、
+// 撮影日時は表示用の文字列ではなくUnixタイムスタンプが得られる。
+async function fetchActivityData() {
+  const activityPath = window.location.pathname.replace(/\/article\/?$/, '').replace(/\/+$/, '');
+  const articleUrl = window.location.origin + activityPath + '/article';
   try {
-    const response = await fetch(articleUrl);
+    // ブラウザのキャッシュに残った古いHTMLを掴まないようにする
+    const response = await fetch(articleUrl, { cache: 'no-cache' });
     const html = await response.text();
-    return new DOMParser().parseFromString(html, 'text/html');
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const nextDataElm = doc.querySelector('#__NEXT_DATA__');
+    if (!nextDataElm) {
+      console.error('__NEXT_DATA__ not found in the article page.');
+      return null;
+    }
+    return JSON.parse(nextDataElm.textContent)?.props?.pageProps?.activity || null;
   } catch (error) {
     console.error('Failed to fetch the article page:', error);
     return null;
   }
 }
 
+// Unixタイムスタンプを、YAMAPの表示と同じ現地時刻の文字列（例: "2026.08.25 04:49:18"）に変換する。
+// 活動日記が持つタイムゾーン（timeZone: 9 なら UTC+9）で計算する。
+function formatTakenAt(unixSeconds, timeZoneHours) {
+  if (!unixSeconds) return undefined;
+  const date = new Date((unixSeconds + (timeZoneHours || 0) * 3600) * 1000);
+  const pad = (num) => String(num).padStart(2, '0');
+  return `${date.getUTCFullYear()}.${pad(date.getUTCMonth() + 1)}.${pad(date.getUTCDate())}`
+    + ` ${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`;
+}
+
 async function gatherActivityData() {
+
+  // 説明文と写真は「日記」タブの埋め込みデータから取得する
+  const articleData = await fetchActivityData();
+  if (!articleData) {
+    return { error: 'articleFetchFailed' };
+  }
 
   const title = document.querySelector('h1')?.textContent.trim();
 
@@ -47,32 +81,22 @@ async function gatherActivityData() {
   const distance = getStatByLabel('距離');
   const ascent = getStatByLabel('のぼり');
   const descent = getStatByLabel('くだり');
-  const calorie = getStatByLabel('カロリー');
+
+  // カロリーはYAMAPのUI刷新で「活動データ」タブから削除されたため、埋め込みデータから取得する
+  const calorie = articleData.calorie ? `${articleData.calorie}kcal` : undefined;
 
   const url = window.location.href;
 
-  // 説明文と写真は「日記」タブのHTMLから取得する（原寸に近い写真と全文の説明文が得られるため）
-  const articleDoc = await fetchArticleDocument();
+  const description = articleData.description?.trim();
 
-  const description = articleDoc?.querySelector('.Article__Description')?.textContent.trim();
-
-  // 写真情報の取得（写真ギャラリーのfigure要素）
-  const photos = Array.from(articleDoc?.querySelectorAll('figure.ImagesGalleryList__Item') || []).map(figure => {
-
-    // 原寸に近いサイズの画像URLは、拡大表示用リンクのhref属性に入っている
-    const imageLinkElm = figure.querySelector('a[itemprop="contentUrl"]');
-    const captionElm = figure.querySelector('.ImagesGalleryList__Caption__OnList__Caption');
-    const takenAtElm = figure.querySelector('.ImagesGalleryList__Caption__OnList__Date');
-    const img = figure.querySelector('img');
-
+  const photos = (articleData.images || []).map(image => {
     return {
-      url: imageLinkElm?.getAttribute('href')?.replace(/\?.*/, ''),
-      // キャプションがあればその内容を取得し、なければimg.altを使う
-      memo: captionElm?.textContent.trim() || img?.alt,
-      // 撮影日時（例: "2026.07.05(日) 06:19"）。YAMAPがEXIFを削除した写真にEXIFを復元するために使う
-      takenAt: takenAtElm?.textContent.trim()
+      // baseUrl は表示用に縮小・再圧縮（imgproxyのrs:fit/q:50）される前のURL
+      url: image.baseUrl,
+      memo: (image.caption || '').trim(),
+      // 撮影日時。YAMAPがEXIFを削除した写真にEXIFを復元するために使う
+      takenAt: formatTakenAt(image.takenAt, articleData.timeZone)
     };
-
   });
 
   // console.log({ date, days, userName, prefName, mapName, title, url, distance, ascent, descent, calorie, description, tags, photos });
@@ -86,6 +110,10 @@ async function gatherActivityData() {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.action === 'gatherData') {
+    if (!isOwnActivity()) {
+      sendResponse({ error: 'notOwnActivity' });
+      return;
+    }
     gatherActivityData().then(data => {
       sendResponse(data);
     });
@@ -93,6 +121,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === 'downloadGpx') {
+    if (!isOwnActivity()) {
+      sendResponse({ error: 'notOwnActivity' });
+      return;
+    }
     // GPXデータのエクスポートボタン（意味のあるクラス名がないため、ボタンのテキストで特定する）
     const gpxButton = Array.from(document.querySelectorAll('button')).find(btn => btn.textContent.trim() === 'エクスポート');
     if (gpxButton) {

@@ -44,6 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
           console.error(chrome.runtime.lastError.message);
           showAlert(chrome.runtime.lastError.message,'warning',false);
           resetButton();  // エラーがあった場合もボタンを元に戻す
+        } else if (response && response.error) {
+          // content.js が処理を中止した場合（自分以外の活動日記、データ取得失敗など）
+          const errorMessages = {
+            notOwnActivity: i18n[lang].msg_error_not_own_activity,
+            articleFetchFailed: i18n[lang].msg_error_article_fetch_failed
+          };
+          showAlert(errorMessages[response.error] || response.error, 'warning', false);
+          resetButton();
         } else if (response) {
           // ZIP作成・ダウンロード処理を呼び出す
           downloadAsZip(response).then(() => {
@@ -76,12 +84,13 @@ async function fetchPhoto(url) {
   });
 }
 
-// 撮影日時のテキスト（例: "2026.07.05(日) 06:19"）をEXIFの日時形式（"2026:07:05 06:19:00"）に変換する
+// 撮影日時のテキスト（例: "2026.07.05 06:19:32"）をEXIFの日時形式（"2026:07:05 06:19:32"）に変換する
+// 秒は省略可（旧形式 "2026.07.05(日) 06:19" も受け付け、その場合は00秒とする）
 function parseTakenAtToExifDateTime(takenAt) {
-  const match = (takenAt || '').match(/(\d{4})\.(\d{2})\.(\d{2}).*?(\d{2}):(\d{2})/);
+  const match = (takenAt || '').match(/(\d{4})\.(\d{2})\.(\d{2}).*?(\d{2}):(\d{2})(?::(\d{2}))?/);
   if (!match) return null;
-  const [, y, mo, d, h, mi] = match;
-  return `${y}:${mo}:${d} ${h}:${mi}:00`;
+  const [, y, mo, d, h, mi, s] = match;
+  return `${y}:${mo}:${d} ${h}:${mi}:${s || '00'}`;
 }
 
 // YAMAPがEXIFを削除した写真に、活動日記に表示されている撮影日時をEXIFとして埋め込む
@@ -134,14 +143,19 @@ async function downloadAsZip(activityData) {
 
       const photoNumber = String(i + 1).padStart(activityData.photos.length.toString().length, '0');
 
+      // 進捗（例: "（3/22枚）"）。残り枚数が分かるようにして、処理中の中断・再実行を防ぐ
+      const progress = i18n[lang].msg_saving_image_progress
+        .replace('{current}', i + 1)
+        .replace('{total}', activityData.photos.length);
+
       // アクティブなタブに処理中の画像ファイル情報を送信
       // (アクティブなタブのコンソールに出力)
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { message: `Saving ${photo.url} as image${photoNumber}.jpg...` });
+        chrome.tabs.sendMessage(tabs[0].id, { message: `Saving ${photo.url} as image${photoNumber}.jpg... (${i + 1}/${activityData.photos.length})` });
       });
 
       // 処理中の画像ファイル情報を表示
-      showAlert(i18n[lang].msg_saving_image_before + 'image' + photoNumber + '.jpg' + i18n[lang].msg_saving_image_after, 'success', false);
+      showAlert(i18n[lang].msg_saving_image_before + 'image' + photoNumber + '.jpg' + i18n[lang].msg_saving_image_after + progress, 'success', false);
 
       zip.file(`image${photoNumber}.jpg`, blob);
 
@@ -149,7 +163,7 @@ async function downloadAsZip(activityData) {
       await delay(delayMs);
 
     } catch (error) {
-      msgElm.innerText = 'Failed to fetch photo: ' + error;
+      showAlert('Failed to fetch photo: ' + error, 'warning', false);
       console.error('Failed to fetch photo:', error);
     }
   }
